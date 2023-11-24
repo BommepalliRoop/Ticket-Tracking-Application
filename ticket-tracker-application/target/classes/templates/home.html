@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Ticket Management</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+
+		.navbar {
+			background-color: #007bff;
+
+		}
+
+	
+
+		.container {
+			margin-top: 50px;
+		}
+		.navbarNav{
+			text-align: justify;
+		}
+
+		h1,
+		h3 {
+			color: #007bff;
+		}
+
+		h4 {
+			color: aliceblue;
+		}
+
+		table {
+			margin-top: 20px;
+			width: 100%;
+		}
+
+		th{
+			padding: 12px;
+			background-color: black;
+		}
+		td{
+			padding: 12px;
+			
+		}
+		
+
+		thead > th{
+            background-color: black;
+            color: #fff;
+        }
+
+		
+
+		/* Add this style for even row color */
+	
+		
+			
+		 
+		 
+		footer{
+			background-color: lightgrey;
+			padding: 5px;
+		}
+
+		
+	</style>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<div class="container-fluid">
+			<h4 class="navbar-brand" id="navbar">Ticket Tracker Application</h4>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-start" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+					<h4 class="navbar-brand"><a class="nav-link" th:href="@{/admin/tickets/newTicket}">New Ticket</a></h4>
+					
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<h1 class="text-left">List of Tickets</h1>
+
+		<div class="col-md-6">
+
+			<div class="input-group">
+				<input type="search" id="searchInput" class="form-control" placeholder="Search">
+				<select id="searchType" class="form-control">
+					<option value="byId">By ID</option>
+					<option value="byTitle">By Title</option>
+				</select>
+				<button type="button" onclick="performSearch()" class="btn btn-primary">Search</button>
+			</div>
+		</div>
+
+
+		<div class="row mt-4">
+			<div class="col-md-12">
+
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Ticket Title</th>
+							<th>Ticket Short Description</th>
+							<th>Ticket Created On</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="t : ${ticket}">
+							<td th:text="${t.id}"></td>
+							<td th:text="${t.ticketTitle}"></td>
+							<td th:text="${t.ticketShortDescription}"></td>
+							<td th:text="${t.ticketCreatedOn}"></td>
+							<td>
+								<a th:href="@{/admin/{id}/edit(id=${t.id})}" class="btn btn-primary">Edit</a>
+								<a th:href="@{/admin/{id}/delete(id=${t.id})}" class="btn btn-danger">Delete</a>
+								<a th:href="@{/admin/{id}/getbyId(id=${t.id})}" class="btn btn-info">View</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		function performSearch() {
+			var searchInput = document.getElementById("searchInput").value;
+			var searchType = document.getElementById("searchType").value;
+
+			if (searchInput.trim() !== "") {
+				var searchUrl;
+
+				if (searchType === "byId") {
+					searchUrl = "/admin/" + encodeURIComponent(searchInput) + "/getbyId";
+				} else if (searchType === "byTitle") {
+					searchUrl = "/admin/tickets/search?ticketTitleOrDesc=" + encodeURIComponent(searchInput);
+				}
+
+				window.location.href = searchUrl;
+			} else {
+				// Handle the case when the search input is empty
+				alert("Please enter a search term.");
+			}
+		}
+		document.getElementById("searchInput").addEventListener("keyup", function (event) {
+			if (event.key === "Enter") {
+				performSearch();
+			}
+		});
+	</script>
+	<footer class="text-center mt-4">
+        <p><b>Copyright &copy; 2023 GreatLearning All rights reserved</b></p>
+    </footer>
+</body>
+
+</html>
